@@ -595,7 +595,7 @@ def unit_update(request, pk):
 def unit_delete(request, pk):
     unit = get_object_or_404(Unit, pk=pk)
     unit.delete()
-    return HttpResponse(status=204)
+    return HttpResponse(status=200)
 
 
 # department
@@ -633,7 +633,7 @@ def department_update(request, pk):
 def department_delete(request, pk):
     department = get_object_or_404(Department, pk=pk)
     department.delete()
-    return HttpResponse(status=204)
+    return HttpResponse(status=200)
 
 
 # position
@@ -672,7 +672,7 @@ def position_update(request, pk):
 def position_delete(request, pk):
     department = get_object_or_404(Position, pk=pk)
     department.delete()
-    return HttpResponse(status=204)
+    return HttpResponse(status=200)
 
 
 # item
@@ -747,7 +747,7 @@ def faculty_update(request, pk):
 def faculty_delete(request, pk):
     faculty = get_object_or_404(Faculty, pk=pk)
     faculty.delete()
-    return HttpResponse(status=204)
+    return HttpResponse(status=200)
 
 
 # authentication / login

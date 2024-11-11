@@ -25,7 +25,7 @@
             <td>{{ unit.unit_type }}</td>
             <td>
                 <button class="btn btn-sm btn-secondary" hx-get="{% url 'home:unit_update' unit.id %}" hx-target="#modal-body" hx-trigger="click" data-bs-toggle="modal" data-bs-target="#modal">Edit</button>
-                <button class="btn btn-sm btn-danger" hx-delete="{% url 'home:unit_delete' unit.id %}" hx-target="#unit-{{ unit.id }}" hx-swap="outerHTML" ghjgjhhgjjhjgjgjhgjhgjh>Del</button>
+                <button class="btn btn-sm btn-danger" hx-delete="{% url 'home:unit_delete' unit.id %}" hx-target="#unit-{{ unit.id }}" hx-swap="outerHTML">Del</button>
             </td>
         </tr>
         {% endfor %}
