@@ -1,0 +1,273 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<h3>Academic Units</h3>
+<div class="row mt-2">
+    <div class="col-md-12">
+        <div class="card mb-2">
+            
+            <div class="card-header bg-success text-white">
+                <div class="d-flex justify-content-end align-items-center">
+
+                    <label for="year-select" class="form-label me-2">Select Year</label>
+                    <select id="year-select" name="year_position" class="form-select w-25 me-4" hx-get="{% url 'home:unit_chart_list' 1 %}" hx-target="#unit-chart-data" hx-trigger="change, load" hx-include="[name='year_position'], [name='unit_id']" hx-target="#faculty-table-body" hx-swap="outerHTML">>
+                        <option value="">All Years</option>
+                        {% for year in years %}
+                            <option value="{{ year.year }}">{{ year.year }}</option>
+                        {% endfor %}
+                    </select>
+                    <label for="unit-select" class="form-label me-2">Select Unit</label>
+                    <select id="unit-select" name="unit_id" class="form-select w-25" hx-get="{% url 'home:unit_chart_list' 1 %}" hx-target="#unit-chart-data" hx-trigger="change, load" hx-include="[name='year_position'], [name='unit_id']" hx-target="#faculty-table-body" hx-swap="outerHTML">>
+                        <option value="">All Units</option>
+                        {% for unit in units %}
+                            <option value="{{ unit.id }}">{{ unit.unit_name }}</option>
+                        {% endfor %}
+                    </select>
+                    <span class="ms-auto"><a href="#" id="downloadPdf" class="btn btn-sm btn-warning">Report (Pdf)</a></span>
+                </div>
+            </div>
+            
+            <div id="academic-chart">
+                <div class="row p-4">
+                    <div class="col-md-8">
+                        <div class="card-body" id="academic-unit-line-chart-container">
+                            <div class="text-center"><h5>Faculty Position Distribution</h5></div>
+                            <canvas id="positionChart"></canvas>
+                            <!-- <div id="unit-chart-data" hx-swap="outerHTML:swap" class="invisible"></div> -->
+                        </div>
+                    </div>
+        
+                    <div class="col-md-4">
+                        <div class="card-body" id="academic-unit-line-chart-container-pie">
+                            <div class="text-center"><h5>Faculty Position Pie Chart</h5></div>
+                            <canvas id="positionChartPie"></canvas>
+                            <!-- <div id="unit-chart-data" hx-swap="outerHTML:swap" class="invisible"></div> -->
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <h5 class="mt-5 mp-4">Position Counts</h5>
+                        <table class="table table-striped table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Position</th>
+                                    <th class="text-end">Count</th>
+                                </tr>
+                            </thead>
+                            <tbody id="position-counts-table">
+                                <!-- Position count rows will be dynamically inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <h5>List of Faculty</h5> 
+        <table class="table table-striped table-bordered table-hover" id="faculty-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Faculty No</th>
+                    <th>Item No</th>
+                    <th>Name</th>
+                    <th>Position</th>
+                    <th>Gender</th>
+                    <th>Item Status</th>
+                    <th>Department Name</th>
+                </tr>
+            </thead>
+            <tbody id="faculty-table-body">
+                <!-- Dynamic rows will be inserted here -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const ctx = document.getElementById('positionChart').getContext('2d');
+        const positionChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: [],
+                datasets: []
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+        const ctx1 = document.getElementById('positionChartPie').getContext('2d');
+        const positionChartPie = new Chart(ctx1, {
+            type: 'pie',
+            data: {
+                labels: [],
+                datasets: []
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+        // Function to generate a random color
+        function getRandomColor() {
+            const r = Math.floor(Math.random() * 255);
+            const g = Math.floor(Math.random() * 255);
+            const b = Math.floor(Math.random() * 255);
+            return `rgba(${r}, ${g}, ${b}, 0.2)`;
+        }
+
+        // Function to generate a random border color
+        function getRandomBorderColor() {
+            const r = Math.floor(Math.random() * 255);
+            const g = Math.floor(Math.random() * 255);
+            const b = Math.floor(Math.random() * 255);
+            return `rgba(${r}, ${g}, ${b}, 1)`;
+        }
+
+        function updateChart(chart, chart1, data) {
+            const labels = data.positions;
+            const counts = data.counts;
+
+            const backgroundColors = labels.map(() => getRandomColor());
+            const borderColors = labels.map(() => getRandomBorderColor());
+
+            chart.data.labels = labels;
+            chart.data.datasets = [{
+                label: 'Position Count',
+                data: counts,
+                backgroundColor: backgroundColors,
+                borderColor: borderColors,
+                borderWidth: 1
+            }];
+            chart.update();
+
+            chart1.data.labels = labels;
+            chart1.data.datasets = [{
+                label: 'Position Count',
+                data: counts,
+                backgroundColor: backgroundColors,
+                borderColor: borderColors,
+                borderWidth: 1
+            }];
+            chart1.update();
+
+            // Update the position counts table
+            const positionCountsTable = document.getElementById('position-counts-table');
+            positionCountsTable.innerHTML = ''; // Clear existing table rows
+
+            labels.forEach((label, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td>${label}</td><td class="text-end">${counts[index]}</td>`;
+                positionCountsTable.appendChild(row);
+            });
+        }
+
+        document.querySelectorAll('#year-select, #unit-select').forEach(selectElement => {
+            selectElement.addEventListener('change', function(evt) {
+                const year = document.getElementById('year-select').value;
+                const unit = document.getElementById('unit-select').value;
+                fetch(`{% url 'home:unit_chart_unit' 1 %}?year_position=${year}&unit_id=${unit}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        updateChart(positionChart, positionChartPie, data);
+                    });
+                fetch(`{% url 'home:unit_chart_list' 1 %}?year_position=${year}&unit_id=${unit}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const tbody = document.getElementById('faculty-table-body');
+                        tbody.innerHTML = '';
+                        let counter = 1;
+                        data.faculty.forEach(faculty => {
+                            const itemStatusClass = faculty.item_status === 'COS' ? 'bg-danger' :
+                                                    faculty.item_status === 'Vacant' ? 'bg-primary' :
+                                                    faculty.item_status === 'JO' ? 'bg-warning' : 'bg-success';
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${counter++}</td>
+                                <td>${faculty.faculty_no}</td>
+                                <td>${faculty.item_no}</td>
+                                <td>${faculty.name}</td>
+                                <td>${faculty.position}</td>
+                                <td>${faculty.gender}</td>
+                                <td><span class="badge rounded-pill ${itemStatusClass}">${faculty.item_status}</span></td>
+                                <td>${faculty.department_name}</td>
+                            `;
+                            tbody.appendChild(row);
+                        });
+                    });
+            });
+
+            // Load initial data for all years and units
+            fetch("{% url 'home:unit_chart_unit' 1 %}")
+                .then(response => response.json())
+                .then(data => {
+                    updateChart(positionChart, positionChartPie, data);
+                });
+
+            document.getElementById('downloadPdf').addEventListener('click', function() {
+                const chartContainer = document.querySelector('#academic-chart');
+                // const facultyTable = document.querySelector('.table');
+                const facultyTable = document.querySelector('#faculty-table');
+
+                html2canvas(chartContainer).then(canvas => {
+                    const imgDataChart = canvas.toDataURL('image/png');
+                    const { jsPDF } = window.jspdf;
+                    const pdf = new jsPDF();
+
+                    pdf.addImage(imgDataChart, 'PNG', 20, 20, 160, 160);
+
+                    html2canvas(facultyTable).then(canvasTable => {
+                        const imgDataTable = canvasTable.toDataURL('image/png');
+                        pdf.addPage();
+                        pdf.addImage(imgDataTable, 'PNG', 10, 10, 190, 0);
+                        pdf.save('status_report.pdf');
+                    });
+                });
+            });
+
+        });
+
+        // $(document).ready(function() {
+        //     $('#faculty-table').DataTable();
+        // });
+    
+    });
+
+    
+</script>
+
+{% endblock %}
+

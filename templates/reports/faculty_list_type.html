@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Faculty List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 2px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .small-column {
+            width: 6%;
+        }
+    </style>
+</head>
+<body>
+    <h1>Faculty List by Employment Type</h1>
+
+    <h2>Teaching Employees</h2>
+    <table>
+        <tr>
+            <th class="small-column">No.</th>
+            <th>Faculty No</th>
+            <th>Name</th>
+            <th>Item Status</th>
+            <th>Position</th>
+        </tr>
+        {% for faculty in teaching %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ faculty.faculty_no }}</td>
+            <td>{{ faculty.last_name }}, {{ faculty.first_name }} {{ faculty.middle_name }}</td>
+            <td>{{ faculty.item_status }}</td>
+            <td>{{ faculty.position_id.position_name }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>Non-Teaching Employees</h2>
+    <table>
+        <tr>
+            <th class="small-column">No.</th>
+            <th>Faculty No</th>
+            <th>Name</th>
+            <th>Item Status</th>
+            <th>Position</th>
+        </tr>
+        {% for faculty in non_teaching %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ faculty.faculty_no }}</td>
+            <td>{{ faculty.last_name }}, {{ faculty.first_name }} {{ faculty.middle_name }}</td>
+            <td>{{ faculty.item_status }}</td>
+            <td>{{ faculty.position_id.position_name }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}HR Dashboard{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+
+<!-- Include DataTables Buttons extension -->
+<script src="https://cdn.datatables.net/buttons/2.3.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.3.2/js/buttons.bootstrap5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.3.2/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.3.2/js/buttons.print.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.3.2/js/buttons.colVis.min.js"></script>
+
+<!-- Include Bootstrap 5 CSS -->
+<link href="https://cdn.datatables.net/1.13.1/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
+<link href="https://cdn.datatables.net/buttons/2.3.2/css/buttons.bootstrap5.min.css" rel="stylesheet" />
+
+<div class="row mt-2">
+    <h3 class="mb-4">Employee Alpha list</h3>
+    <div class="bg-light">
+        <h5 class="mt-2">LEGEND:</h5>
+        <p class="m-4"><strong>Item Status:</strong>: <span class="text-primary">Vacant</span> |
+            <span class="text-warning">JO</span> |
+            <span class="text-danger">COS</span> |
+            <span class="text-success">Permanent</span>
+        </p>
+        <p class="m-4">
+            <strong>Type:</strong>: <span class="badge rounded-pill bg-success">Non-Teaching</span> | 
+            <span class="badge rounded-pill bg-primary">Teaching</span>
+        </p>
+    </div>
+
+    <div class="col-md-12 mt-4">
+        <table class="table table-sm table-striped table-bordered table-hover mt-4" id="faculty-table">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Name</th>
+                    <th>Item</th>
+                    <th>Position</th>
+                    <th>Gender</th>
+                    <th>Education</th>
+                    <th>Hired</th>
+                    <th>Email</th>
+                    <th>Dept.</th>
+                    <th>Unit</th>
+                </tr>
+            </thead>
+            <tbody id="faculty-table-body">
+                {% for employee in employees %}
+                    <tr class="{% if employee.item_status == 'COS' %} text-danger
+                                {% elif employee.item_status == 'JO' %} text-warning
+                                {% elif employee.item_status == 'Permanent' %} text-success
+                                {% elif employee.item_status == 'Vacant' %} text-primary
+                                {% endif %}">
+                        <td>{{employee.faculty_no}}</td>
+                        <td>{{employee}}</td>
+                        <td>{{employee.item_no}}</td>
+                        <td>{{employee.position_id}}</td>
+                        <td><scan class="{% if employee.employment_type == 'Teaching' %} badge rounded-pill bg-primary
+                            {% elif employee.employment_type == 'Non-Teaching' %} badge rounded-pill bg-success
+                            {% endif %}">{{employee.gender}}</scan></td>
+                        <td>{{employee.education}}</td>
+                        <td>{{employee.date_hired|date:"Y-m-d"}}</td>
+                        <td>{{employee.email_address}}</td>
+                        <td>{{employee.department_id}}</td>
+                        <td>{{employee.department_id.unit_id.unit_short_name}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    $("#faculty-table").DataTable({
+        "responsive": true, "lengthChange": false, "autoWidth": false,
+        "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+      }).buttons().container().appendTo('#faculty-table_wrapper .col-md-6:eq(0)');
+</script>
+{% endblock %}

@@ -1,0 +1,18 @@
+<!-- partials/faculty_table.html -->
+<tbody>
+    {% for employee in employees %}
+        <tr>
+            <td>{{employee.faculty_no}}</td>
+            <td>{{employee}}</td>
+            <td>{{employee.item_no}}</td>
+            <td>{{employee.position_id}}</td>
+            <td>{{employee.gender}}</td>
+            <td>{{employee.education}}</td>
+            <td>{{employee.date_hired|date:"Y-m-d"}}</td>
+            <td>{{employee.email_address}}</td>
+            <td>{{employee.employment_type}}</td>
+            <td>{{employee.item_status}}</td>
+            <td>{{employee.department_id}}</td>
+        </tr>
+    {% endfor %}
+</tbody>

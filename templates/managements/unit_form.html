@@ -1,0 +1,5 @@
+<form method="post" hx-post="{% url 'home:unit_create' %}" hx-target="#modal .modal-content" hx-swap="innerHTML:replace">
+    {% csrf_token %}
+    {% crispy form %}
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+</form>

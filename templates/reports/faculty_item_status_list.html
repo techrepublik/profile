@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Faculty List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h2 {
+            background-color: #f2f2f2;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 30px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 2px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .small-column {
+            width: 6%;
+        }
+        .content-wrapper {
+            margin-bottom: 40px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Faculty List Categorized by Empoyment Status</h1>
+
+    {% for status, faculty_list in faculty_by_status.items %}
+    <div class="content-wrapper">
+        <h2>{{ status }}</h2>
+        <table>
+            <tr>
+                <th class="small-column">No.</th>
+                <th>Faculty No</th>
+                <th>Name</th>
+                <th>Item Status</th>
+                <th>Position</th>
+            </tr>
+            {% for faculty in faculty_list %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ faculty.faculty_no }}</td>
+                <td>{{ faculty.last_name }}, {{ faculty.first_name }} {{ faculty.middle_name }}</td>
+                <td>{{ faculty.item_status }}</td>
+                <td>{{ faculty.position_id.position_name }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% endfor %}
+</body>
+</html>

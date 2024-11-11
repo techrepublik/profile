@@ -1,0 +1,71 @@
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+<h1>Units</h1>
+<button class="btn btn-secondary btn-sm float-end mb-2" hx-get="{% url 'home:unit_create' %}" hx-target="#modal-body" hx-trigger="click" data-bs-toggle="modal" data-bs-target="#modal">Create Unit</button>
+<table class="table table-sm table-hover table-striped table-bordered mt-4" id="unit-table">
+    <thead>
+        <tr>
+            <th>Unit Name</th>
+            <th>Unit Short</th>
+            <th>Unit Type</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody id="unit-list">
+        {% for unit in units %}
+        <tr id="unit-{{ unit.id }}">
+            <td>{{ unit.unit_name }}</td>
+            <td>{{ unit.unit_short_name }}</td>
+            <td>{{ unit.unit_type }}</td>
+            <td>
+                <button class="btn btn-sm btn-secondary" hx-get="{% url 'home:unit_update' unit.id %}" hx-target="#modal-body" hx-trigger="click" data-bs-toggle="modal" data-bs-target="#modal">Edit</button>
+                <button class="btn btn-sm btn-danger" hx-delete="{% url 'home:unit_delete' unit.id %}" hx-target="#unit-{{ unit.id }}" hx-swap="outerHTML" ghjgjhhgjjhjgjgjhgjhgjh>Del</button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Modal Structure -->
+<div class="modal fade" id="modal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalLabel">Create Unit</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <!-- Modal content will be loaded here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    
+    $(document).ready(function() {
+        $('#unit-table').DataTable();
+    });
+    
+    document.addEventListener('show-toast', event => {
+        const { level, message, title } = event.detail;
+        toastr[level](message, title);
+    });
+    {% comment %} $(document).ready(function() {
+        $('#unit-table').DataTable({
+            "responsive": true, "lengthChange": false, "autoWidth": false,
+            "buttons": ["excel", "pdf", "print"]
+        }).buttons().container().appendTo('#unit-table_wrapper .col-md-6:eq(0)');
+    }); {% endcomment %}
+</script>
+
+
+
+
+

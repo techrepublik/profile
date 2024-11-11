@@ -1,0 +1,9 @@
+<tr id="department-{{department.id}}">
+    <td>{{ department.department_name }}</td>
+    <td>{{ department.department_short_name }}</td>
+    <td>{{ department.unit_id }}</td>
+    <td>
+        <button class="btn btn-sm btn-secondary" hx-get="{% url 'home:department_update' department.id %}" hx-target="#modal-body" hx-trigger="click" data-bs-toggle="modal" data-bs-target="#modal">Edit</button>
+        <button class="btn btn-sm btn-danger" hx-delete="{% url 'home:department_delete' department.id %}" hx-target="#department-{{ department.id }}" hx-swap="outerHTML">Del</button>
+    </td>
+</tr>

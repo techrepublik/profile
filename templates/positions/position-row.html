@@ -1,0 +1,8 @@
+<tr id="position-{{position.id}}">
+    <td>{{ position.position_name }}</td>
+    <td>{{ position.position_short_name }}</td>
+    <td>
+        <button class="btn btn-sm btn-secondary" hx-get="{% url 'home:position_update' position.id %}" hx-target="#modal-body" hx-trigger="click" data-bs-toggle="modal" data-bs-target="#modal">Edit</button>
+        <button class="btn btn-sm btn-danger" hx-delete="{% url 'home:position_delete' position.id %}" hx-target="#position-{{ position.id }}" hx-swap="outerHTML">Del</button>
+    </td>
+</tr>

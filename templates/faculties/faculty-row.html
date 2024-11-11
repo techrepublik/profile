@@ -1,0 +1,17 @@
+<tr id="faculty-{{ faculty.id }}">
+    <td>{{ faculty.faculty_no }}</td>
+    <td>{{ faculty}}</td>
+    <td>{{ faculty.gender}}</td>
+    <td>{{ faculty.position_id}}</td>
+        {% if faculty.item_status == 'Vacant' %}
+            <td><span class="badge rounded-pill bg-primary">{{ faculty.item_status}}</span></td>
+        {% elif faculty.item_status == 'COS' %}
+            <td><span class="badge rounded-pill bg-danger">{{ faculty.item_status}}</span></td>
+        {% else %}
+            <td><span class="badge rounded-pill bg-success">{{ faculty.item_status}}</span></td>
+        {% endif %}
+    <td>
+        <button class="btn btn-sm btn-secondary" hx-get="{% url 'home:faculty_update' faculty.id %}" hx-target="#modal-body" hx-trigger="click" data-bs-toggle="modal" data-bs-target="#modal">Edit</button>
+        <button class="btn btn-sm btn-danger" hx-delete="{% url 'home:faculty_delete' faculty.id %}" hx-target="#faculty-{{ faculty.id }}" hx-swap="outerHTML" hx-confirm="Are you sure to delete this record?">Del</button>
+    </td>
+</tr>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Status Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        .graph {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        table {
+            width: 50%;
+            margin: 0 auto;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Status Report</h1>
+    <div class="graph" id="chat-container">
+        <canvas id="statusChart"></canvas>
+    </div>
+    <h2>Status Counts</h2>
+    <table>
+        <tr>
+            <th>Status</th>
+            <th>Count</th>
+        </tr>
+        {% for status, count in status_counts.items %}
+        <tr>
+            <td>{{ status }}</td>
+            <td>{{ count }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        var ctx = document.getElementById('statusChart').getContext('2d');
+        var statusChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['COS', 'Permanent', 'Vacant'],
+                datasets: [{
+                    label: 'Employee Status',
+                    data: [{{ status_counts.COS }}, {{ status_counts.Permanent }}, {{ status_counts.Vacant }}],
+                    backgroundColor: [
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 99, 132, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 99, 132, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+    document.getElementById('downloadPdf').addEventListener('click', function() {
+        html2canvas(document.querySelector('#chart-container')).then(canvas => {
+            const imgData = canvas.toDataURL('image/png');
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF();
+            pdf.addImage(imgData, 'PNG', 10, 10, 190, 100);
+            
+            // Add the table
+            pdf.setFontSize(12);
+            let startY = 120;
+            pdf.text('Status Counts', 10, startY);
+            startY += 10;
+            pdf.text('Status', 10, startY);
+            pdf.text('Count', 60, startY);
+            startY += 10;
+            {% for status, count in status_counts.items %}
+            pdf.text('{{ status }}', 10, startY);
+            pdf.text('{{ count }}', 60, startY);
+            startY += 10;
+            {% endfor %}
+            
+            pdf.save('status_report.pdf');
+        });
+    });
+    </script>
+</body>
+</html>

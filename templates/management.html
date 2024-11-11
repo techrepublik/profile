@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Management{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-2">
+        <div class="list-group">
+            <a href="#" class="list-group-item list-group-item-action" hx-get="{% url 'home:unit_list' %}" hx-target="#content" hx-swap="innerHTML">Unit</a>
+            <a href="#" class="list-group-item list-group-item-action" hx-get="{% url 'home:department_list' %}" hx-target="#content" hx-swap="innerHTML">Department</a>
+            <a href="#" class="list-group-item list-group-item-action" hx-get="{% url 'home:position_list' %}" hx-target="#content" hx-swap="innerHTML">Position</a>
+            {% comment %} <a href="#" class="list-group-item list-group-item-action" hx-get="{% url 'home:item_list' %}" hx-target="#content" hx-swap="innerHTML">Item</a> {% endcomment %}
+            <a href="#" class="list-group-item list-group-item-action" hx-get="{% url 'home:faculty_list' %}" hx-target="#content" hx-swap="innerHTML">Faculty</a>
+        </div>
+    </div>
+    <div class="col-md-10" id="content">
+        <h2>Management Dashboard</h2>
+        <p>Welcome to the Management section. Please select an item from the sidebar.</p>
+    </div>
+</div>
+{% endblock %}

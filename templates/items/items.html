@@ -1,0 +1,57 @@
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+
+<h1>Departments</h1>
+<button class="btn btn-secondary btn-sm float-end mb-2" hx-get="{% url 'home:item_create' %}" hx-target="#modal-body" hx-trigger="click" data-bs-toggle="modal" data-bs-target="#modal">Create Department</button>
+<table class="table" id="item-table">
+    <thead>
+        <tr>
+            <th>Item no</th>
+            <th>Description</th>
+            <th>Position</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody id="item-list">
+        {% for item in items %}
+        <tr id="item-{{ item.id }}">
+            <td>{{ item.item_no }}</td>
+            <td>{{ item.item_description }}</td>
+            <td>{{ item.position_id}}
+            <td>
+                <button class="btn btn-sm btn-secondary" hx-get="{% url 'home:item_update' item.id %}" hx-target="#modal-body" hx-trigger="click" data-bs-toggle="modal" data-bs-target="#modal">Edit</button>
+                <button class="btn btn-sm btn-danger" hx-delete="{% url 'home:item_delete' item.id %}" hx-target="#item-{{ item.id }}" hx-swap="outerHTML" hx-confirm="Are you sure to delete this record?">Delete</button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Modal Structure -->
+<div class="modal fade" id="modal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalLabel">Create Item</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <!-- Modal content will be loaded here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('#item-table').DataTable();
+    });
+</script>
+
+
+
+
+

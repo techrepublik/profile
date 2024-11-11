@@ -1,0 +1,48 @@
+{% load crispy_forms_tags %}
+
+<h2>Unit Management</h2>
+<p>Content for Unit management goes here.</p>
+
+<div class="container mt-4">
+    <h2>Units</h2>
+    <button class="btn btn-success mb-2" hx-get="{% url 'home:unit_create' %}" hx-target="#modal .modal-content" hx-trigger="click">Create Unit</button>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Unit Name</th>
+                <th>Unit Short</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for unit in units %}
+            <tr id="unit-{{ unit.id }}">
+                <td>{{ unit.unit_name }}</td>
+                <td>{{ unit.unit_short }}</td>
+                <td>
+                    <button class="btn btn-primary" hx-get="{% url 'home:unit_update' unit.id %}" hx-target="#modal .modal-content" hx-trigger="click">Edit</button>
+                    <button class="btn btn-danger" hx-delete="{% url 'home:unit_delete' unit.id %}" hx-target="#unit-{{ unit.id }}" hx-confirm="Are you sure?">Delete</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <!-- Content will be loaded here -->
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('htmx:afterRequest', function(event) {
+        if (event.detail.successful) {
+            if (event.detail.verb === 'POST' || event.detail.verb === 'DELETE') {
+                location.reload();
+            }
+        }
+    });
+</script>

@@ -1,0 +1,93 @@
+
+{% block content %}
+<style>
+    .dataTables_filter {
+        float: right;
+    }
+</style>
+<h1>Employees</h1>
+<button class="btn btn-secondary btn-sm float-end mb-2" hx-get="{% url 'home:faculty_create' %}" hx-target="#modal-body" hx-trigger="click" data-bs-toggle="modal" data-bs-target="#modal">Create Department</button>
+<table class="table table-sm table-hover table-striped table-bordered mt-4" id="faculty-table">
+    <thead>
+        <tr>
+            <th>Number</th>
+            <th>Name</th>
+            <th>Gender</th>
+            <th>Item</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody id="faculty-list">
+        {% for faculty in faculties %}
+        <tr id="faculty-{{ faculty.id }}">
+            <td>{{ faculty.faculty_no }}</td>
+            <td>{{ faculty}}</td>
+            <td>{{ faculty.gender}}</td>
+            <td>{{ faculty.position_id}}</td>
+            {% if faculty.item_status == 'Vacant' %}
+                <td><span class="badge rounded-pill bg-primary">{{ faculty.item_status}}</span></td>
+            {% elif faculty.item_status == 'COS' %}
+                <td><span class="badge rounded-pill bg-danger">{{ faculty.item_status}}</span></td>
+            {% elif faculty.item_status == 'JO' %}
+                <td><span class="badge rounded-pill bg-warning">{{ faculty.item_status}}</span></td>
+            {% else %}
+                <td><span class="badge rounded-pill bg-success">{{ faculty.item_status}}</span></td>
+            {% endif %}
+            
+            <td>
+                <button class="btn btn-sm btn-secondary" hx-get="{% url 'home:faculty_update' faculty.id %}" hx-target="#modal-body" hx-trigger="click" data-bs-toggle="modal" data-bs-target="#modal">Edit</button>
+                <button class="btn btn-sm btn-danger" hx-delete="{% url 'home:faculty_delete' faculty.id %}" hx-target="#faculty-{{ faculty.id }}" hx-swap="outerHTML" hx-confirm="Are you sure to delete this record?">Del</button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Modal Structure -->
+<div class="modal fade" id="modal" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalLabel">Create Employee</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <!-- Modal content will be loaded here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        //$('#faculty-table').DataTable();
+        new DataTable('#faculty-table',  {
+            layout: {
+                topStart: {
+                    pageLength: {
+                        menu: [ 10, 25, 50, 100 ]
+                    }
+                },
+                topEnd: {
+                    search: {
+                        placeholder: 'Type search here'
+                    }
+                },
+                bottomEnd: {
+                    paging: {
+                        buttons: 3
+                    }
+                }
+            }
+        });
+
+        
+    }); 
+</script>
+{% endblock content %}
+
+
+
+
+

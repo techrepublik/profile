@@ -1,0 +1,92 @@
+{% load crispy_forms_tags %}
+
+<form method="post" hx-post="{% if form.instance.pk %}{% url 'home:faculty_update' form.instance.pk %}{% else %}{% url 'home:faculty_create' %}{% endif %}" hx-target="{% if form.instance.pk %}#faculty-{{ form.instance.pk }}{% else %}#faculty-list{% endif %}" hx-swap="{% if form.instance.pk %}outerHTML{% else %}beforeend{% endif %}">
+    {% csrf_token %}
+        <div class="row">
+            <div class="col-md-3">
+                {{ form.faculty_no|as_crispy_field }}
+            </div>
+            <div class="col-md-4">
+                {{ form.item_no|as_crispy_field }}
+            </div>
+            <div class="col-md-5">
+                {{ form.position_id|as_crispy_field }} 
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3 mb-0">
+                {{ form.first_name|as_crispy_field }}
+            </div>
+            <div class="col-md-3 mb-0">
+                {{ form.middle_name|as_crispy_field }}
+            </div>
+            <div class="col-md-3 mb-0">
+                {{ form.last_name|as_crispy_field }}
+            </div>
+            <div class="col-md-3 mb-0">
+                {{ form.ext_name|as_crispy_field }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-9 mb-0">
+                {{ form.address|as_crispy_field }}
+            </div>
+            <div class="col-md-3 mb-0">
+                {{ form.gender|as_crispy_field }}
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-3 mb-0">
+                {{ form.education|as_crispy_field }}
+            </div>
+            <div class="col-md-3 mb-0">
+                {{ form.employment_status|as_crispy_field }}
+            </div>
+            <div class="col-md-3 mb-0">
+                {{ form.item_status|as_crispy_field }}
+            </div>
+            <div class="col-md-3 mb-0">
+                {{ form.employment_type|as_crispy_field }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3 mb-0">
+                {{ form.date_hired|as_crispy_field }}
+            </div>
+            <div class="col-md-3 mb-0">
+                {{ form.date_promoted|as_crispy_field }}
+            </div>
+            <div class="col-md-3 mb-0">
+                {{ form.date_started|as_crispy_field }}
+            </div>
+            <div class="col-md-3 mb-0">
+                {{ form.date_end|as_crispy_field }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-0">
+                {{ form.email_address|as_crispy_field }}
+            </div>
+            <div class="col-md-6 mb-0">
+                {{ form.contact_no|as_crispy_field }}
+            </div>
+        </div>
+        <div class=row>
+            <div class="col-md-6 mb-0">
+                {{form.facebook|as_crispy_field}}
+            </div>
+            <div class="col-md-6 mb-0">
+                {{ form.department_id|as_crispy_field }}
+            </div>
+            
+        </div>
+        {{form.remarks|as_crispy_field}}
+        {{form.is_active|as_crispy_field}} {{form.is_promoted|as_crispy_field}}
+        
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Save changes</button>
+      </div>
+</form>
